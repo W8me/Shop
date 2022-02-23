@@ -1,0 +1,47 @@
+﻿@page "/pizza/{id:int}"
+@inject IPizzaServiceC PizzaServiceC
+
+@if (pizza == null)
+{
+    <span>@message</span>
+}
+
+else
+{
+    <div class="media">
+        <div class="media-img-wrapper mr-2">
+            <img clas="media-img" src="@pizza.ImageUrl" alt="@pizza.Title" />
+            <div class="media-body">
+                <h2 class="mb-0">@pizza.Title</h2>
+                <p>@pizza.Description</p>
+                <h4 class="price">
+                    $@pizza.Price
+                </h4>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Pizza? pizza = null;
+    private string message = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        message = "Loading pizza...";
+
+        var resault = await PizzaServiceC.GetPizzaById(Id);
+
+        if (!resault.Success)
+        {
+            message = resault.Messege;
+        }
+        else
+        {
+            pizza = resault.Data;
+        }
+    }
+}

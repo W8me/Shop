@@ -1,0 +1,28 @@
+﻿@page "/"
+@page "/search/{searchText}"
+@page "/{categoryUrl}"
+
+@inject IPizzaServiceC PizzaServiceC
+
+<PizzaList />
+
+@code{
+
+    [Parameter]
+    public string? CategoryUrl { get; set; } = null;
+
+    [Parameter]
+    public string? SearchText { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SearchText != null)
+        {
+            await PizzaServiceC.SearchPizza(SearchText);
+        }
+        else
+        {
+            await PizzaServiceC.GetPizzas(CategoryUrl);
+        }
+    }
+}
